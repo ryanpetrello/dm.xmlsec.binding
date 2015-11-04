@@ -43,7 +43,7 @@ class Extension(Extension, object):
 
 # determine macros, include dirs, libraries dirs and libraries required
 #  for ourself, `libxml2` and `libxmlsec1`
-define_macros = []
+define_macros = [("XMLSEC_NO_SIZE_T", "1")]
 include_dirs  = ["src"]
 library_dirs  = []
 libraries     = []
