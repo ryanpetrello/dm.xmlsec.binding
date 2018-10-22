@@ -1,6 +1,6 @@
 LXML_REQUIREMENT = "lxml>=3.0"
 
-import sys, commands
+import sys, subprocess
 from os.path import abspath, dirname, join, exists
 from os import environ
 
@@ -69,7 +69,7 @@ def extract_cflags(cflags):
                 else:
                     define_macros.append(t)
         else:
-            print "Warning : cflag %s skipped" % flag
+            print("Warning : cflag %s skipped" % flag)
 
 def extract_libs(libs):
     global library_dirs, libraries
@@ -84,30 +84,30 @@ def extract_libs(libs):
             if flag[2:] not in library_dirs:
                 library_dirs.append(flag[2:])
         else:
-            print "Warning : linker flag %s skipped" % flag
+            print("Warning : linker flag %s skipped" % flag)
 
 
-libxml2_cflags = commands.getoutput('xml2-config --cflags')
+libxml2_cflags = subprocess.getoutput('xml2-config --cflags')
 if libxml2_cflags[:2] not in ["-I", "-D"]:
     sys.exit("Error : cannot get LibXML2 pre-processor and compiler flags; do you have the `libxml2` development package installed?")
 
-libxml2_libs = commands.getoutput('xml2-config --libs')
+libxml2_libs = subprocess.getoutput('xml2-config --libs')
 if libxml2_libs[:2] not in ["-l", "-L"]:
     sys.exit("Error : cannot get LibXML2 linker flags; do you have the `libxml2` development package installed?")
 
 crypto_engine = environ.get("XMLSEC_CRYPTO_ENGINE")
 if crypto_engine is None:
-  crypto_engine = commands.getoutput("xmlsec1-config --crypto")
+  crypto_engine = subprocess.getoutput("xmlsec1-config --crypto")
   if not crypto_engine:
     sys.exit("Error: cannot get XMLSec1 crypto engine")
 else:
   assert crypto_engine in ("openssl", "gnutls", "nss")
 crypto_engine = " --crypto=" + crypto_engine
-xmlsec1_cflags = commands.getoutput("xmlsec1-config --cflags" + crypto_engine)
+xmlsec1_cflags = subprocess.getoutput("xmlsec1-config --cflags" + crypto_engine)
 if xmlsec1_cflags[:2] not in ["-I", "-D"]:
     sys.exit("Error: cannot get XMLSec1 pre-processor and compiler flags; do you have the `libxmlsec1` development package installed?")
 
-xmlsec1_libs = commands.getoutput("xmlsec1-config --libs" + crypto_engine)
+xmlsec1_libs = subprocess.getoutput("xmlsec1-config --libs" + crypto_engine)
 if xmlsec1_libs[:2] not in ["-l", "-L"]:
     sys.exit("Error : cannot get XMLSec1 linker flags; do you have the `libxmlsec1` development package installed?")
 
